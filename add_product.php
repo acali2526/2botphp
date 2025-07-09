@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add New Product</title>
-  <!-- Your compiled Tailwind CSS -->
   <link href="public/css/output.css" rel="stylesheet">
 </head>
 <body class="flex">
@@ -31,7 +30,7 @@
         </div>
         <div>
           <label class="label" for="item_number"><span class="label-text">Item Number</span></label>
-          <input type="text" id="item_number" name="item_number" placeholder="Manufacturer/Supplier Item #" class="input input-bordered w-full" required />
+          <input type="text" id="item_number" name="item_number" placeholder="Manufacturer/Supplier Item #" class="input input-bordered w-full" required />
         </div>
       </div>
 
@@ -85,86 +84,78 @@
   </main>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const addProductForm = document.getElementById('addProductForm');
-      const formMessageContainer = document.getElementById('formMessageContainer');
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('addProductForm');
+      const msgContainer = document.getElementById('formMessageContainer');
 
-      function displayFormMessage(message, type = 'info') {
-        const alertClasses = {
+      function showMessage(content, type = 'info') {
+        const classes = {
           info: 'alert-info',
           success: 'alert-success',
           warning: 'alert-warning',
-          error: 'alert-error'
+          error: 'alert-error',
         };
-        const alertClass = alertClasses[type] || 'alert-info';
-
-        let content = '';
-        if (type === 'error' && Array.isArray(message)) {
-          content = '<ul>' + message.map(err => `<li>${err}</li>`).join('') + '</ul>';
+        const cls = classes[type] || classes.info;
+        let inner = '';
+        if (type === 'error' && Array.isArray(content)) {
+          inner = '<ul>' + content.map(e => `<li>${e}</li>`).join('') + '</ul>';
         } else {
-          content = message;
+          inner = content;
         }
-
-        formMessageContainer.innerHTML = `
-          <div class="alert ${alertClass} shadow-lg">
+        msgContainer.innerHTML = `
+          <div class="alert ${cls} shadow-lg">
             <div>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
-                ${type === 'success' ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />' : ''}
-                ${type === 'error'   ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />' : ''}
-                ${(type === 'info' || type === 'warning') 
-                  ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>' 
-                  : ''}
+                ${type === 'success'
+                  ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />'
+                  : type === 'error'
+                    ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />'
+                    : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>'}
               </svg>
-              <span>${content}</span>
+              <span>${inner}</span>
             </div>
           </div>`;
-        if (type !== 'error') {
-          setTimeout(() => { formMessageContainer.innerHTML = ''; }, 5000);
-        }
+        if (type !== 'error') setTimeout(() => msgContainer.innerHTML = '', 5000);
       }
 
-      addProductForm.addEventListener('submit', function(e) {
+      form.addEventListener('submit', e => {
         e.preventDefault();
-        formMessageContainer.innerHTML = '';
-
-        const formData = new FormData(addProductForm);
-        const data = {};
-
-        for (let [key, val] of formData.entries()) {
-          if (['cost_price','sell_price','reorder_level','current_quantity'].includes(key)) {
-            data[key] = val === '' ? null : parseFloat(val);
+        msgContainer.innerHTML = '';
+        const fd = new FormData(form);
+        const payload = {};
+        for (let [k,v] of fd.entries()) {
+          if (['cost_price','sell_price','reorder_level','current_quantity'].includes(k)) {
+            payload[k] = v === '' ? null : parseFloat(v);
           } else {
-            data[key] = val.trim();
+            payload[k] = v.trim();
           }
         }
 
-        displayFormMessage('Submitting product data...', 'info');
-        const btn = addProductForm.querySelector('button[type="submit"]');
-        const origText = btn.innerHTML;
+        showMessage('Submitting…', 'info');
+        const btn = form.querySelector('button[type="submit"]');
+        const txt = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = '<span class="loading loading-spinner loading-sm"></span> Adding...';
+        btn.innerHTML = '<span class="loading loading-spinner loading-sm"></span> Adding…';
 
         fetch('app/api/products/create.php', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
-          body: JSON.stringify(data),
+          body: JSON.stringify(payload)
         })
         .then(res => res.json().then(body => ({ ok: res.ok, status: res.status, body })))
         .then(({ ok, status, body }) => {
           if (ok && status === 201) {
-            displayFormMessage(`Product created successfully! ID: ${body.id}`, 'success');
-            addProductForm.reset();
+            showMessage(`Product created! ID: ${body.id}`, 'success');
+            form.reset();
           } else {
-            let err = body.errors || body.message || `Error ${status}`;
-            displayFormMessage(err, 'error');
+            const err = body.errors || body.message || `Error ${status}`;
+            showMessage(err, 'error');
           }
         })
-        .catch(() => {
-          displayFormMessage('Network error. Please try again.', 'error');
-        })
+        .catch(() => showMessage('Network error. Try again.', 'error'))
         .finally(() => {
           btn.disabled = false;
-          btn.innerHTML = origText;
+          btn.innerHTML = txt;
         });
       });
     });
