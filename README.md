@@ -67,6 +67,7 @@ You need a web server to serve the PHP files.
     *   Start your Apache server (or equivalent) through the XAMPP/MAMP/WAMP control panel.
     *   Open your web browser and navigate to the project directory (e.g., `http://localhost/your_project_folder_name/`).
 
+
 ## Usage
 
 Once the application is running:
