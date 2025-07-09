@@ -1,0 +1,25 @@
+{
+  "name": "small-business-inventory-app",
+  "version": "1.0.0",
+  "description": "PHP application for small business inventory management with Tailwind CSS and DaisyUI.",
+  "main": "index.php",
+  "scripts": {
+    "build": "tailwindcss -i ./src/css/input.css -o ./public/css/output.css",
+    "watch": "tailwindcss -i ./src/css/input.css -o ./public/css/output.css --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "php",
+    "inventory",
+    "tailwindcss",
+    "daisyui"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "daisyui": "^4.10.1",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3"
+  }
+}
