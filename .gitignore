@@ -1,0 +1,17 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build artifacts
+/public/css/output.css
+
+# SQLite Database
+database.sqlite
+# If you want to keep the database file out of git, uncomment the line above
+# For development, sometimes it's useful to track a base version or sample data.
+
+# OS generated files
+.DS_Store
+Thumbs.db
