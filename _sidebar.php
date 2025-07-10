@@ -4,6 +4,5 @@
         <li><a href="index.php">Home</a></li>
         <li><a href="products.php">Products</a></li>
         <li><a href="add_product.php">Add New Product</a></li>
-        <li><a href="scan_barcode.php">Scan Barcode</a></li>
     </ul>
 </div>
