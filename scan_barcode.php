@@ -39,7 +39,7 @@
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@latest/umd/zxing-library.min.js"></script>
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const videoElement = document.getElementById('barcodeScannerFeed');

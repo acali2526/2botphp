@@ -41,7 +41,7 @@ try {
         exit; // Exit if table creation fails
     }
 
-} catch (PDOException $e) {
+ catch (PDOException $e) {
     echo "Failed to connect to the database: " . $e->getMessage() . "\n";
     exit; // Exit if connection fails
 }
